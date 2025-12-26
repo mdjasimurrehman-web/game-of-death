@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GAME OF DEATH!!!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: black;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-top: 20px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-top: 10px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      justify-content: center;
+      max-width: 95vw;
+      margin: 20px auto;
+    }
+
+    .cell {
+      width: 30vw; /* responsive width */
+      height: 30vw; /* keep square shape */
+      max-width: 100px; /* limit for bigger screens */
+      max-height: 100px;
+      font-size: 6vw; /* scale font to screen size */
+      cursor: pointer;
+      background-color: #222;
+      color: white;
+      border: 1px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .restart {
+      margin-top: 25px;
+      width: 80vw;
+      max-width: 220px;
+      height: 50px;
+      font-size: 1.2rem;
+      background-color: black;
+      color: white;
+      border: 1px solid white;
+      cursor: pointer;
+    }
+
+    .restart:hover,
+    .restart:active,
+    .restart:focus {
+      background-color: black;
+      color: white;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>GAME OF DEATH!!!</h1>
+  <h2 id="status">Player X's turn</h2>
+
+  <div class="board">
+    <button class="cell" onclick="makeMove(0)"></button>
+    <button class="cell" onclick="makeMove(1)"></button>
+    <button class="cell" onclick="makeMove(2)"></button>
+    <button class="cell" onclick="makeMove(3)"></button>
+    <button class="cell" onclick="makeMove(4)"></button>
+    <button class="cell" onclick="makeMove(5)"></button>
+    <button class="cell" onclick="makeMove(6)"></button>
+    <button class="cell" onclick="makeMove(7)"></button>
+    <button class="cell" onclick="makeMove(8)"></button>
+  </div>
+
+  <button class="restart" onclick="resetGame()">Restart Game</button>
+
+  <script>
+    let board = ["", "", "", "", "", "", "", "", ""];
+    let currentPlayer = "X";
+    let gameOver = false;
+
+    const winPatterns = [
+      [0,1,2], [3,4,5], [6,7,8],
+      [0,3,6], [1,4,7], [2,5,8],
+      [0,4,8], [2,4,6]
+    ];
+
+    function makeMove(index) {
+      if (board[index] !== "" || gameOver) return;
+
+      board[index] = currentPlayer;
+      document.querySelectorAll(".cell")[index].innerText = currentPlayer;
+
+      if (checkWin()) {
+        document.getElementById("status").innerText = "Player " + currentPlayer + " wins!";
+        gameOver = true;
+        return;
+      }
+
+      if (board.every(cell => cell !== "")) {
+        document.getElementById("status").innerText = "It's a draw!";
+        gameOver = true;
+        return;
+      }
+
+      currentPlayer = currentPlayer === "X" ? "O" : "X";
+      document.getElementById("status").innerText = "Player " + currentPlayer + "'s turn";
+    }
+
+    function checkWin() {
+      return winPatterns.some(pattern =>
+        pattern.every(i => board[i] === currentPlayer)
+      );
+    }
+
+    function resetGame() {
+      board = ["", "", "", "", "", "", "", "", ""];
+      currentPlayer = "X";
+      gameOver = false;
+      document.getElementById("status").innerText = "Player X's turn";
+      document.querySelectorAll(".cell").forEach(btn => btn.innerText = "");
+    }
+  </script>
+</body>
+</html>
